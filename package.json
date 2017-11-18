@@ -1,0 +1,15 @@
+{
+  "name": "koncept-creator",
+  "version": "0.0.0",
+  "description": "lib for creating concepts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:ntbm/koncept-creator.git"
+  },
+  "author": "Sascha Hahne <hahne.sascha@web.de>",
+  "license": "ISC"
+}
