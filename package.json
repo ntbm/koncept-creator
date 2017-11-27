@@ -11,5 +11,8 @@
     "url": "github.com:ntbm/koncept-creator.git"
   },
   "author": "Sascha Hahne <hahne.sascha@web.de>",
-  "license": "ISC"
+  "license": "NO LICENSE",
+  "dependencies": {
+    "vis": "^4.21.0"
+  }
 }
