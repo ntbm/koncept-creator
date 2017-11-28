@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../node_modules/vis/dist/vis-network.min.js"></script>
+    <script src="../lib/app.js" ></script>
+</head>
+<body>
+<div id="example" style="width: 800px; height: 800px;"/>
+<script>
+  var concept = {
+    'name': 'epilepsy',
+    'children': [
+      {
+        'name': 'poltical terms',
+        'parent_relationship': 'contradicts',
+        'children': [
+          {
+            'name': 'dies',
+            'type': 'term'
+          },
+          {
+            'name': 'campus',
+            'type': 'term'
+          },
+
+        ]
+      },
+      {
+        'name': 'causes',
+        'parent_relationship': 'maybe_supports',
+        'children': [
+          {
+            'name': 'vinum',
+            'type': 'term'
+          }
+        ]
+      }
+    ]
+  }
+  conceptC = new ConceptC({
+    container_id: 'example'
+  }, concept)
+</script>
+</body>
+</html>
