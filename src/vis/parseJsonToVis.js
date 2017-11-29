@@ -1,9 +1,9 @@
 const vis = require("vis/dist/vis-network.min.js")
 module.exports = {
-  createNodesAndDataset
+  parseJsonToVis
 }
 
-function createNodesAndDataset (data) {
+function parseJsonToVis (data) {
   let {nodesArray, edgesArray} = parseJsonNode(null, data, [], [])
   return {
     nodes: new vis.DataSet(nodesArray),
@@ -15,6 +15,7 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
   let current = {
     label: name,
     id: (nodesArray.length || 0) + 1,
+    meta,
     parent_relationship
   }
   if(parent){
@@ -29,8 +30,8 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
   current.color = nodeColor(current.parent_relationship)
   current.shape = nodeShape(type)
   nodesArray.push(current)
-  if(current_node.children){
-    for(let node of current_node.children){
+  if(children){
+    for(let node of children){
       let result = parseJsonNode(current, node, nodesArray, edgesArray)
       nodesArray = result.nodesArray
       edgesArray = result.edgesArray

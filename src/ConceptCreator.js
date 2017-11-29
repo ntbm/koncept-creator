@@ -1,22 +1,21 @@
-const vis = require("vis/dist/vis-network.min.js")
-const {createNodesAndDataset} = require("./vis/parseJsonToVis")
+const Network = require("src/vis/Network")
+const {parseJsonToVis} = require("src/vis/parseJsonToVis")
+const {parseVisToJson} = require("src/vis/parseVisToJson")
+const Options = require("src/util/Options")
 
 class ConceptC {
   constructor (options, inputJson={}) {
     this.options = new Options(options)
-    let data = createNodesAndDataset(inputJson)
+    let data = parseJsonToVis(inputJson)
     let container = document.getElementById(this.options.container_id);
-    this.visNetwork = new vis.Network(container, data, this.options.visOptions)
+
+    this.network = new Network(container, data, this.options.visOptions)
+  }
+  exportJSON(){
+    return parseVisToJson(this.network)
   }
 }
-class Options {
-  constructor (optionsObj) {
-    let {
-      container_id,
-      visOptions={}
-    } = optionsObj
-    this.container_id = container_id
-    this.visOptions = visOptions
-  }
-}
+
+
 window.ConceptC = ConceptC
+module.exports = ConceptC

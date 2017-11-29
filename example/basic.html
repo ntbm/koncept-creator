@@ -3,51 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../lib/app.js" ></script>
+    <script src="../lib/app.js"></script>
+    <script src="concept.js"></script>
 </head>
 <body>
+<button id="export_btn">export</button>
 <div id="example" style="width: 800px; height: 800px;"/>
 <script>
-  var concept = {
-    'name': 'epilepsy',
-    'children': [
-      {
-        'name': 'poltical terms',
-        'parent_relationship': 'contradicts',
-        'children': [
-          {
-            'name': 'dies',
-            'type': 'term'
-          },
-          {
-            'name': 'campus',
-            'type': 'term'
-          },
-          {
-            'name': 'senatus',
-            'type': 'term'
-          }
-        ]
-      },
-      {
-        'name': 'causes',
-        'parent_relationship': 'maybe_supports',
-        'children': [
-          {
-            'name': 'vinum',
-            'type': 'term'
-          },
-          {
-            'name': 'paupertas',
-            'type': 'term'
-          }
-        ]
-      }
-    ]
-  }
   conceptC = new ConceptC({
     container_id: 'example'
-  }, concept)
+  }, window.concept)
+  document.getElementById('export_btn').addEventListener("click", function () {
+    console.log(conceptC.exportJSON());
+  })
 </script>
 </body>
 </html>
