@@ -1,7 +1,7 @@
-const Network = require("src/vis/Network")
-const {parseJsonToVis} = require("src/vis/parseJsonToVis")
-const {parseVisToJson} = require("src/vis/parseVisToJson")
-const Options = require("src/util/Options")
+const Network = require("./vis/Network")
+const {parseJsonToVis} = require("./vis/parseJsonToVis")
+const {parseVisToJson} = require("./vis/parseVisToJson")
+const Options = require("./util/Options")
 
 class ConceptC {
   constructor (options, inputJson={}) {
