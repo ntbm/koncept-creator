@@ -1,4 +1,6 @@
 const vis = require("vis/dist/vis-network.min.js")
+const {nodeColor, nodeShape} = require('./stylingOfNodeAndEdges')
+
 module.exports = {
   parseJsonToVis
 }
@@ -15,6 +17,7 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
   let current = {
     label: name,
     id: (nodesArray.length || 0) + 1,
+    type,
     meta,
     parent_relationship
   }
@@ -40,31 +43,5 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
   return {
     nodesArray,
     edgesArray
-  }
-}
-function nodeColor (parent_relationship) {
-  switch (parent_relationship) {
-    case "contradicts":
-      return "red"
-    case "supports":
-      return "green"
-    case "maybe_supports":
-      return "green"
-    case "inherit":
-      return null
-    default:
-      console.error("invalid relationship")
-      return null
-  }
-}
-function nodeShape (type) {
-  switch (type) {
-    case "concept":
-      return "box"
-    case "term":
-      return "ellipse"
-    default:
-      console.error("invalid type")
-      return null
   }
 }

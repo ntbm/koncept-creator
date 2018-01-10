@@ -5,13 +5,18 @@
     <title>Title</title>
     <script src="../lib/app.js"></script>
     <script src="concept.js"></script>
+    <link href="../node_modules/vis/dist/vis-network.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <button id="export_btn">export</button>
-<div id="example" style="width: 800px; height: 800px;"/>
+<div id="example"></div>
 <script>
   conceptC = new ConceptC({
-    container_id: 'example'
+    container_id: 'example',
+    visOptions: {
+      height: '500px',
+      width: '500px'
+    }
   }, window.concept)
   document.getElementById('export_btn').addEventListener("click", function () {
     console.log(conceptC.exportJSON());
