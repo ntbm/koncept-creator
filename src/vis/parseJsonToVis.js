@@ -1,5 +1,4 @@
 const vis = require("vis/dist/vis-network.min.js")
-const {nodeColor, nodeShape} = require('./stylingOfNodeAndEdges')
 
 module.exports = {
   parseJsonToVis
