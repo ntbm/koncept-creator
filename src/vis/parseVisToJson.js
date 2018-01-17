@@ -4,7 +4,7 @@ module.exports = {
   parseVisToJson
 }
 // TODO clean JSON from vis data or add it for all
-function parseVisToJson(network) {
+function parseVisToJson(network=this.network) {
   if (!network instanceof Network){
     throw "input should be of type Network"
   }

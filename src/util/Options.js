@@ -3,29 +3,29 @@ module.exports = class Options {
                  network_container_id,
                  batch_container_id,
                  editable = true,
-                 on_node_create = on_node_create,
-                 on_edge_create = on_edge_create,
+                 on_node_create = _on_node_create,
+                 on_edge_create = _on_edge_create,
                  relationshipColors = {},
-                 parent_relationship_mapping = {},
+                 relationship_mapping = {},
                  nodeShape = {},
                  visOptions = {}
                }) {
     this.network_container_id = network_container_id
     this.batch_container_id = batch_container_id
-    this.on_node_create = on_node_create
-    this.on_edge_create = on_edge_create
+    this.on_node_create = on_node_create.bind(this)
+    this.on_edge_create = on_edge_create.bind(this)
     this.relationshipColors = Object.assign({
       '1': 'red',
       '0': 'blue',
       '-1': 'green'
     }, relationshipColors)
-    this.parent_relationship_mapping = Object.assign({
+    this.relationship_mapping = Object.assign({
       'contradicts': -1,
       'maybe_contradicts': -0.5,
       'inherit': 0,
       'maybe_supports': 0.5,
       'supports': 1
-    }, parent_relationship_mapping)
+    }, relationship_mapping)
     this.nodeShape = Object.assign({
       concept: 'box',
       term: 'ellipse'
@@ -35,17 +35,15 @@ module.exports = class Options {
   }
 }
 
-function on_node_create (nodeData, callback) {
+function _on_node_create (nodeData, callback) {
   nodeData.type = 'concept'
   nodeData.label = 'foobar'
   nodeData.shape = this.nodeShape['concept']
-  callback(nodeData)
+  callback.bind(this)(nodeData)
 }
 
-function on_edge_create (edgeData, callback) {
+function _on_edge_create (edgeData, callback) {
+  // Set edgeData properties
   edgeData.relationship = 0
-  if (this.connectionIsValid(edgeData)) {
-    return callback(edgeData)
-  }
-  return callback(null)
+  callback(edgeData)
 }
