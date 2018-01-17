@@ -15,9 +15,9 @@ module.exports = class Options {
     this.on_node_create = on_node_create.bind(this)
     this.on_edge_create = on_edge_create.bind(this)
     this.relationshipColors = Object.assign({
-      '1': 'red',
-      '0': 'blue',
-      '-1': 'green'
+      '-1': '#B22222',
+      '0': '#0000FF',
+      '1': '#008000'
     }, relationshipColors)
     this.relationship_mapping = Object.assign({
       'contradicts': -1,
@@ -44,12 +44,11 @@ module.exports = class Options {
 function _on_node_create (nodeData, callback) {
   nodeData.type = 'concept'
   nodeData.label = 'foobar'
-  nodeData.shape = this.nodeShape['concept']
+  nodeData.relationship = 0
   callback.bind(this)(nodeData)
 }
 
 function _on_edge_create (edgeData, callback) {
   // Set edgeData properties
-  edgeData.relationship = 0
   callback(edgeData)
 }
