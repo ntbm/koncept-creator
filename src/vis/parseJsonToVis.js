@@ -6,36 +6,44 @@ module.exports = {
 }
 
 function parseJsonToVis (data) {
-  let {nodesArray, edgesArray} = parseJsonNode(null, data, [], [])
+  this.parseJsonNode  = parseJsonNode.bind(this)
+  let {nodesArray, edgesArray} = this.parseJsonNode(null, data, [], [])
+
   return {
     nodes: new vis.DataSet(nodesArray),
     edges: new vis.DataSet(edgesArray)
   }
 }
 function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
-  let {name, type="concept", parent_relationship="inherit", meta, children} = current_node
+  let {name, type="concept", relationship="inherit", meta, children} = current_node
   let current = {
     label: name,
     id: (nodesArray.length || 0) + 1,
     type,
     meta,
-    parent_relationship
+    relationship
+  }
+  if (this.relationship_mapping[relationship] || this.relationship_mapping[relationship] === 0) {
+    Object.assign(current, {
+      relationship:this.relationship_mapping[relationship]
+    })
   }
   if(parent){
-    if(current.parent_relationship === "inherit"){
-      current.parent_relationship = parent.parent_relationship
+    if(current.relationship===0){
+      current.relationship = parent.relationship || 0
     }
     edgesArray.push({
       from: parent.id,
       to: current.id
     })
   }
-  current.color = nodeColor(current.parent_relationship)
-  current.shape = nodeShape(type)
+  current.color = this.nodeColor(current.relationship) //todo this
+  console.log(current.color, current.relationship) //todo this
+  current.shape = this.nodeShape[type] //todo this
   nodesArray.push(current)
   if(children){
     for(let node of children){
-      let result = parseJsonNode(current, node, nodesArray, edgesArray)
+      let result = this.parseJsonNode(current, node, nodesArray, edgesArray)
       nodesArray = result.nodesArray
       edgesArray = result.edgesArray
     }

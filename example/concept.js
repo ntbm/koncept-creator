@@ -3,7 +3,7 @@ window.concept = {
   'children': [
     {
       'name': 'poltical terms',
-      'parent_relationship': 'contradicts',
+      'relationship': 'contradicts',
       'children': [
         {
           'name': 'dies',
@@ -21,7 +21,21 @@ window.concept = {
     },
     {
       'name': 'causes',
-      'parent_relationship': 'maybe_supports',
+      'relationship': 'maybe_supports',
+      'children': [
+        {
+          'name': 'vinum',
+          'type': 'term'
+        },
+        {
+          'name': 'paupertas',
+          'type': 'term'
+        }
+      ]
+    },
+    {
+      'name': 'causes',
+      'relationship': 'supports',
       'children': [
         {
           'name': 'vinum',
