@@ -30,7 +30,13 @@ module.exports = class Options {
       concept: 'box',
       term: 'ellipse'
     }, nodeShape)
-    this.visOptions = Object.assign({}, visOptions)
+    this.visOptions = Object.assign({
+      edges: {
+        arrows: {
+          to: true
+        }
+      }
+    }, visOptions)
     this.editable = editable
   }
 }
