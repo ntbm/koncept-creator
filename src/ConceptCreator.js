@@ -125,8 +125,9 @@ class ConceptCreator {
     if (this.options.editable) {
       function addNode (nodeData, callback) {
         this.network_util.on_node_create(nodeData, (_nodeData) => {
-          _nodeData.shape = this.network_util.nodeShape[_nodeData.type]
-          _nodeData.color = this.network_util.nodeColor(_nodeData.relationship)
+          if(!_nodeData.relationship) _nodeData.relationship = 0
+          if(!_nodeData.shape) _nodeData.shape = this.network_util.nodeShape[_nodeData.type]
+          if(!_nodeData.color) _nodeData.color = this.network_util.nodeColor(_nodeData.relationship)
           callback(_nodeData)
         })
       }
