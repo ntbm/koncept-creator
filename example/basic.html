@@ -9,6 +9,10 @@
 </head>
 <body>
 <button id="export_btn">export</button>
+<button id="node_btn">add node</button>
+<button id="edge_btn">add edge</button>
+<button id="cancel_btn">Cancel Edit</button>
+<button id="clear_btn">Delete Network</button>
 <div id="example"></div>
 <script>
   conceptC = new ConceptCreator({
@@ -20,6 +24,18 @@
   }, window.concept)
   document.getElementById('export_btn').addEventListener("click", function () {
     console.log(conceptC.exportJSON());
+  })
+  document.getElementById('node_btn').addEventListener("click", function () {
+    conceptC.network.addNodeMode()
+  })
+  document.getElementById('edge_btn').addEventListener("click", function () {
+    conceptC.network.addEdgeMode()
+  })
+  document.getElementById('cancel_btn').addEventListener("click", function () {
+    conceptC.network.disableEditMode()
+  })
+  document.getElementById('clear_btn').addEventListener("click", function () {
+    conceptC.network.clear()
   })
 </script>
 </body>
