@@ -31,6 +31,9 @@ module.exports = class Options {
       term: 'ellipse'
     }, nodeShape)
     this.visOptions = Object.assign({
+      manipulation: {
+        enabled: false
+      },
       edges: {
         arrows: {
           to: true

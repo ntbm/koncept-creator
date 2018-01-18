@@ -141,10 +141,10 @@ class ConceptCreator {
         )
       }
 
-      this.options.visOptions.manipulation = {
+      Object.assign(this.options.visOptions.manipulation, {
         addNode: addNode.bind(this),
         addEdge: addEdge.bind(this)
-      }
+      })
     }
     this.network = new Network(container, data, this.options.visOptions)
   }
