@@ -37,7 +37,6 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
     })
   }
   current.color = this.nodeColor(current.relationship) //todo this
-  console.log(current.color, current.relationship) //todo this
   current.shape = this.nodeShape[type] //todo this
   nodesArray.push(current)
   if(children){

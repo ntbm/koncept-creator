@@ -117,7 +117,6 @@ class ConceptCreator {
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
       set_node_defaults: set_node_defaults.bind(this.network_util),
-      node_defaults: {},
       parseVisToJson: parseVisToJson.bind(this),
       nodeShape: this.options.nodeShape,
       relationship_mapping: this.options.relationship_mapping,
