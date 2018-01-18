@@ -12,8 +12,8 @@ module.exports = class Options {
                }) {
     this.network_container_id = network_container_id
     this.batch_container_id = batch_container_id
-    this.on_node_create = on_node_create.bind(this)
-    this.on_edge_create = on_edge_create.bind(this)
+    this.on_node_create = on_node_create
+    this.on_edge_create = on_edge_create
     this.relationshipColors = Object.assign({
       '-1': '#B22222',
       '0': '#0000FF',
@@ -48,7 +48,7 @@ function _on_node_create (nodeData, callback) {
   nodeData.type = 'concept'
   nodeData.label = 'foobar'
   nodeData.relationship = 0
-  callback.bind(this)(nodeData)
+  callback(nodeData)
 }
 
 function _on_edge_create (edgeData, callback) {

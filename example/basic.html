@@ -9,7 +9,8 @@
 </head>
 <body>
 <button id="export_btn">export</button>
-<button id="node_btn">add node</button>
+<button id="concept_btn">add concept</button>
+<button id="term_btn">add term</button>
 <button id="edge_btn">add edge</button>
 <button id="cancel_btn">Cancel Edit</button>
 <button id="clear_btn">Delete Network</button>
@@ -17,24 +18,36 @@
 <script>
   conceptC = new ConceptCreator({
     network_container_id: 'example',
+    on_node_create: function (nodeData, callback) {
+      if (this.node_defaults) {
+        Object.assign(nodeData, this.node_defaults)
+        this.node_defaults = null
+      }
+      callback(nodeData)
+    },
     visOptions: {
       height: '500px',
       width: '500px'
     }
   }, window.concept)
-  document.getElementById('export_btn').addEventListener("click", function () {
-    console.log(conceptC.exportJSON());
+  document.getElementById('export_btn').addEventListener('click', function () {
+    console.log(conceptC.exportJSON())
   })
-  document.getElementById('node_btn').addEventListener("click", function () {
+  document.getElementById('concept_btn').addEventListener('click', function () {
+   conceptC.network_util.node_defaults = {type: 'concept', relationship: -1}
     conceptC.network.addNodeMode()
   })
-  document.getElementById('edge_btn').addEventListener("click", function () {
+  document.getElementById('term_btn').addEventListener('click', function () {
+    conceptC.network_util.node_defaults = {type: 'term'}
+    conceptC.network.addNodeMode()
+  })
+  document.getElementById('edge_btn').addEventListener('click', function () {
     conceptC.network.addEdgeMode()
   })
-  document.getElementById('cancel_btn').addEventListener("click", function () {
+  document.getElementById('cancel_btn').addEventListener('click', function () {
     conceptC.network.disableEditMode()
   })
-  document.getElementById('clear_btn').addEventListener("click", function () {
+  document.getElementById('clear_btn').addEventListener('click', function () {
     conceptC.network.clear()
   })
 </script>

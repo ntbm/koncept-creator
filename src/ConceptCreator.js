@@ -100,7 +100,9 @@ function nodeColor (relationship) {
   }
   return color
 }
-
+function set_node_defaults (defaults) {
+  this.node_defaults = defaults
+}
 class ConceptCreator {
   constructor (options, inputJson = {}) {
     this.options = new Options(options)
@@ -109,15 +111,17 @@ class ConceptCreator {
     Object.assign(this.network_util, {
       on_node_create: this.options.on_node_create.bind(this.network_util),
       on_edge_create: this.options.on_edge_create.bind(this.network_util),
-      nodeShape: this.options.nodeShape,
-      relationship_mapping: this.options.relationship_mapping,
-      relationshipColors: this.options.relationshipColors,
-      parseVisToJson: parseVisToJson.bind(this),
-      getNodesById: getNodesById.bind(this.network_util),
       connectionIsValid: connectionIsValid.bind(this.network_util),
+      getNodesById: getNodesById.bind(this.network_util),
       connectionValidator: connectionValidator.bind(this.network_util),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
-      nodeColor: nodeColor.bind(this.network_util)
+      nodeColor: nodeColor.bind(this.network_util),
+      set_node_defaults: set_node_defaults.bind(this.network_util),
+      node_defaults: {},
+      parseVisToJson: parseVisToJson.bind(this),
+      nodeShape: this.options.nodeShape,
+      relationship_mapping: this.options.relationship_mapping,
+      relationshipColors: this.options.relationshipColors
     })
     let data = this.network_util.parseJsonToVis(inputJson)
     let container = document.getElementById(this.options.network_container_id)
