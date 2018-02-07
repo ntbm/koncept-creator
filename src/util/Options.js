@@ -4,6 +4,7 @@ module.exports = class Options {
                  batch_container_id,
                  editable = true,
                  on_node_create = _on_node_create,
+                 on_node_edit = _on_node_edit,
                  on_edge_create = _on_edge_create,
                  relationshipColors = {},
                  relationship_mapping = {},
@@ -13,6 +14,7 @@ module.exports = class Options {
     this.network_container_id = network_container_id
     this.batch_container_id = batch_container_id
     this.on_node_create = on_node_create
+    this.on_node_edit = on_node_edit
     this.on_edge_create = on_edge_create
     this.relationshipColors = Object.assign({
       '-1': '#B22222',
@@ -48,6 +50,9 @@ function _on_node_create (nodeData, callback) {
   nodeData.type = 'concept'
   nodeData.label = 'foobar'
   nodeData.relationship = 0
+  callback(nodeData)
+}
+function _on_node_edit (nodeData, callback) {
   callback(nodeData)
 }
 

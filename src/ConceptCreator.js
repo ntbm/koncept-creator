@@ -41,6 +41,35 @@ function getNodesById (_network, ids, result) {
   }
 }
 
+function getNodeChildrenAndParentById (_network, id, result) {
+  let nextNetwork = new Array(0)
+  let parentFound = false
+  if (!result) {
+    result = {parent: null, children: null}
+  }
+  _network.forEach(node => {
+    node.children.forEach(child => {
+      child.parent = node.id
+      nextNetwork.push(child)
+      if (child.id === id) {
+        parentFound = true
+        result.parent = node
+      }
+    })
+    if (node.id === id) {
+      result.children = node.children
+    }
+  })
+  if (
+    (!result.parent && result.children)
+    || (!parentFound && result.parent)
+  ) {
+    return result
+  } else {
+    return this.getNodeChildrenAndParentById(nextNetwork, id, result)
+  }
+}
+
 function connectionValidator (edgeData, callback) {
   //Check for valid network
   if (edgeData.from === edgeData.to) {
@@ -56,19 +85,19 @@ function connectionValidator (edgeData, callback) {
 }
 
 function nodeColor (relationship) {
-  function int_to_hex(num)
-  {
-    var hex = Math.round(num).toString(16);
-    if (hex.length == 1)
-      hex = '0' + hex;
-    return hex;
+  function int_to_hex (num) {
+    let hex = Math.round(num).toString(16)
+    if (hex.length === 1)
+      hex = '0' + hex
+    return hex
   }
+
   function blendColors (color1, color2, percentage) {
-    if (color1.length == 4)
+    if (color1.length === 4)
       color1 = color1[1] + color1[1] + color1[2] + color1[2] + color1[3] + color1[3]
     else
       color1 = color1.substring(1)
-    if (color2.length == 4)
+    if (color2.length === 4)
       color2 = color2[1] + color2[1] + color2[2] + color2[2] + color2[3] + color2[3]
     else
       color2 = color2.substring(1)
@@ -89,20 +118,22 @@ function nodeColor (relationship) {
   if (this.relationship_mapping[relationship]) {
     relation = this.relationship_mapping[relationship]
   }
-  if (relation === 0){
+  if (relation === 0) {
     color = this.relationshipColors[0]
   }
-  if (relation < 0 && relation >= -1){
+  if (relation < 0 && relation >= -1) {
     color = blendColors('#fff', this.relationshipColors['-1'], Math.abs(relation))
   }
-  if (relation > 0 && relation <= 1){
+  if (relation > 0 && relation <= 1) {
     color = blendColors('#fff', this.relationshipColors['1'], relation)
   }
   return color
 }
+
 function set_node_defaults (defaults) {
   this.node_defaults = defaults
 }
+
 class ConceptCreator {
   constructor (options, inputJson = {}) {
     this.options = new Options(options)
@@ -110,9 +141,11 @@ class ConceptCreator {
     this.network_util = {}
     Object.assign(this.network_util, {
       on_node_create: this.options.on_node_create.bind(this.network_util),
+      on_node_edit: this.options.on_node_edit.bind(this.network_util),
       on_edge_create: this.options.on_edge_create.bind(this.network_util),
       connectionIsValid: connectionIsValid.bind(this.network_util),
       getNodesById: getNodesById.bind(this.network_util),
+      getNodeChildrenAndParentById: getNodeChildrenAndParentById.bind(this.network_util),
       connectionValidator: connectionValidator.bind(this.network_util),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
@@ -128,9 +161,19 @@ class ConceptCreator {
     if (this.options.editable) {
       function addNode (nodeData, callback) {
         this.network_util.on_node_create(nodeData, (_nodeData) => {
-          if(!_nodeData.relationship) _nodeData.relationship = 0
-          if(!_nodeData.shape) _nodeData.shape = this.network_util.nodeShape[_nodeData.type]
-          if(!_nodeData.color) _nodeData.color = this.network_util.nodeColor(_nodeData.relationship)
+          if (!_nodeData.relationship) _nodeData.relationship = 0
+          if (!_nodeData.shape) _nodeData.shape = this.network_util.nodeShape[_nodeData.type]
+          if (!_nodeData.color) _nodeData.color = this.network_util.nodeColor(_nodeData.relationship)
+          callback(_nodeData)
+        })
+      }
+
+      function editNode (nodeData, callback) {
+        this.network_util.on_node_edit(nodeData, (_nodeData) => {
+          if (!_nodeData.relationship) _nodeData.relationship = 0
+          if (!_nodeData.shape) _nodeData.shape = this.network_util.nodeShape[_nodeData.type]
+          if (!_nodeData.color) _nodeData.color = this.network_util.nodeColor(_nodeData.relationship)
+          console.log(this.network_util.getNodeChildrenAndParentById(this.network_util.parseVisToJson(), nodeData.id))
           callback(_nodeData)
         })
       }
@@ -139,13 +182,38 @@ class ConceptCreator {
         this.network_util.on_edge_create(
           edgeData,
           (_edgeData) => {
-            this.network_util.connectionValidator(_edgeData, callback)
+            this.network_util.connectionValidator(_edgeData, (validatedEdgeData) => {
+              if (!validatedEdgeData) return callback(null)
+              let jsonNetwork = this.network_util.parseVisToJson()
+              let [from, to] = this.network_util.getNodesById(jsonNetwork, [edgeData.from, edgeData.to])
+
+              let applyInheritance = (node, parent, jsonNetwork) => {
+                let relation = node.relationship
+                if (this.network_util.relationship_mapping[node.relationship]) {
+                  relation = this.network_util.relationship_mapping[node.relationship]
+                }
+                if (relation === 0) {
+                  node.color = parent.color
+                  this.network.body.data.nodes.getDataSet().update(node)
+                  let {children} = this.network_util.getNodeChildrenAndParentById(jsonNetwork, node.id)
+                  if (children) {
+                    children.forEach(child => {
+                      applyInheritance(child, node, jsonNetwork)
+                    })
+                  }
+                }
+              }
+              applyInheritance(to, from, jsonNetwork)
+
+              callback(validatedEdgeData)
+            })
           }
         )
       }
 
       Object.assign(this.options.visOptions.manipulation, {
         addNode: addNode.bind(this),
+        editNode: editNode.bind(this),
         addEdge: addEdge.bind(this)
       })
     }

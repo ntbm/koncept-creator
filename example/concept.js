@@ -20,6 +20,24 @@ window.concept = {
       ]
     },
     {
+      'name': 'poltical terms',
+      'relationship': 0,
+      'children': [
+        {
+          'name': 'dies',
+          'type': 'term'
+        },
+        {
+          'name': 'campus',
+          'type': 'term'
+        },
+        {
+          'name': 'senatus',
+          'type': 'term'
+        }
+      ]
+    },
+    {
       'name': 'causes',
       'relationship': 'maybe_supports',
       'children': [
