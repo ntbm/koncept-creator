@@ -2,6 +2,7 @@ const Network = require('./vis/Network')
 const {parseJsonToVis} = require('./vis/parseJsonToVis')
 const {parseVisToJson} = require('./vis/parseVisToJson')
 const Options = require('./util/Options')
+const debounce = require('./util/debounce')
 
 function connectionIsValid (from, to) {
   if (to.parent) {
@@ -67,6 +68,23 @@ function getNodeChildrenAndParentById (_network, id, result) {
     return result
   } else {
     return this.getNodeChildrenAndParentById(nextNetwork, id, result)
+  }
+}
+
+function applyInheritance (node, parent, jsonNetwork) {
+  let relation = node.relationship
+  if (this.network_util.relationship_mapping[node.relationship]) {
+    relation = this.network_util.relationship_mapping[node.relationship]
+  }
+  if (relation === 0) {
+    node.color = parent.color
+    this.network.body.data.nodes.getDataSet().update(node)
+    let {children} = this.network_util.getNodeChildrenAndParentById(jsonNetwork, node.id)
+    if (children) {
+      children.forEach(child => {
+        this.network_util.applyInheritance(child, node, jsonNetwork)
+      })
+    }
   }
 }
 
@@ -147,6 +165,11 @@ class ConceptCreator {
       getNodesById: getNodesById.bind(this.network_util),
       getNodeChildrenAndParentById: getNodeChildrenAndParentById.bind(this.network_util),
       connectionValidator: connectionValidator.bind(this.network_util),
+      applyInheritance: applyInheritance.bind(this),
+      parseOnUpdate: debounce(() => {
+
+        console.log('updateData', this)
+      }, 250).bind(this),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
       set_node_defaults: set_node_defaults.bind(this.network_util),
@@ -157,6 +180,9 @@ class ConceptCreator {
     })
     let data = this.network_util.parseJsonToVis(inputJson)
     let container = document.getElementById(this.options.network_container_id)
+    if (this.options.batch_container_id) {
+      this.batch_container = document.getElementById(this.options.batch_container_id)
+    }
 
     if (this.options.editable) {
       function addNode (nodeData, callback) {
@@ -187,23 +213,7 @@ class ConceptCreator {
               let jsonNetwork = this.network_util.parseVisToJson()
               let [from, to] = this.network_util.getNodesById(jsonNetwork, [edgeData.from, edgeData.to])
 
-              let applyInheritance = (node, parent, jsonNetwork) => {
-                let relation = node.relationship
-                if (this.network_util.relationship_mapping[node.relationship]) {
-                  relation = this.network_util.relationship_mapping[node.relationship]
-                }
-                if (relation === 0) {
-                  node.color = parent.color
-                  this.network.body.data.nodes.getDataSet().update(node)
-                  let {children} = this.network_util.getNodeChildrenAndParentById(jsonNetwork, node.id)
-                  if (children) {
-                    children.forEach(child => {
-                      applyInheritance(child, node, jsonNetwork)
-                    })
-                  }
-                }
-              }
-              applyInheritance(to, from, jsonNetwork)
+              this.network_util.applyInheritance(to, from, jsonNetwork)
 
               callback(validatedEdgeData)
             })
@@ -218,6 +228,8 @@ class ConceptCreator {
       })
     }
     this.network = new Network(container, data, this.options.visOptions)
+    this.network.on('_dataUpdated',
+      this.network_util.parseOnUpdate)
   }
 
   exportJSON () {
