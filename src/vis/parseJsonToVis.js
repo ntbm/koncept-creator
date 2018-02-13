@@ -14,13 +14,14 @@ function parseJsonToVis (data) {
   }
 }
 function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
-  let {name, type="concept", relationship="inherit", meta, children} = current_node
+  let {name, type="concept", relationship=0, meta, children, positionId='0'} = current_node
   let current = {
     label: name,
     id: (nodesArray.length || 0) + 1,
     type,
     meta,
-    relationship
+    relationship,
+    positionId
   }
   if (this.relationship_mapping[relationship] || this.relationship_mapping[relationship] === 0) {
     Object.assign(current, {
@@ -28,23 +29,25 @@ function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
     })
   }
   if(parent){
-    if(current.relationship===0){
-      current.relationship = parent.relationship || 0
-    }
     edgesArray.push({
       from: parent.id,
       to: current.id
     })
   }
-  current.color = this.nodeColor(current.relationship)
+  current.color = current.relationship === 0 ?
+    (parent ? parent.color : this.nodeColor(0))
+    : this.nodeColor(current.relationship)
   current.shape = this.nodeShape[type]
   nodesArray.push(current)
   if(children){
-    for(let node of children){
+    children.forEach((node, index) => {
+      Object.assign(node, {
+        positionId: current.positionId + `_${index}`
+      })
       let result = this.parseJsonNode(current, node, nodesArray, edgesArray)
       nodesArray = result.nodesArray
       edgesArray = result.edgesArray
-    }
+    })
   }
   return {
     nodesArray,

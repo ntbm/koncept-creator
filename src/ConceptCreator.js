@@ -205,6 +205,7 @@ class ConceptCreator {
       }
 
       function addEdge (edgeData, callback) {
+        // TODO: positionId
         this.network_util.on_edge_create(
           edgeData,
           (_edgeData) => {
