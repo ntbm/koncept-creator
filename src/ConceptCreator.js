@@ -34,7 +34,7 @@ class ConceptCreator {
       connectionValidator: connectionValidator.bind(this.network_util),
       applyInheritance: applyInheritance.bind(this),
       applyPositionIds: applyPositionIds.bind(this),
-      parseOnUpdate: debounce(parseOnUpdate, 250).bind(this),
+      parseOnUpdate: debounce(parseOnUpdate.bind(this), 250),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
       set_node_defaults: set_node_defaults.bind(this.network_util),
@@ -91,8 +91,7 @@ class ConceptCreator {
     }
     this.network = new Network(container, data, this.options.visOptions)
     setTimeout(this.network_util.parseOnUpdate, 200)
-    this.network.on('_dataUpdated',
-      this.network_util.parseOnUpdate)
+    this.network.on('_dataUpdated', this.network_util.parseOnUpdate)
   }
 
   exportJSON () {
