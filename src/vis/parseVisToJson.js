@@ -13,6 +13,7 @@ function parseVisToJson(network=this.network, clean=true) {
   let rootNodes = []
   nodes.getDataSet().forEach((node) => {
     if(!childIds.find((item) => item === node.id)){
+      // TODO
       // Does not Work because the output is parsed by id, the
       // user has no interest in getting an id for this so think about it some more
       // if(clean) {
