@@ -4,7 +4,8 @@ module.exports = {
   getNodeChildrenAndParentById,
   applyInheritance,
   connectionValidator,
-  nodeColor
+  nodeColor,
+  applyPositionIds
 
 }
 
@@ -83,6 +84,22 @@ function applyInheritance (node, parent, jsonNetwork) {
       })
     }
   }
+}
+
+function applyPositionIds (jsonNetwork = this.network_util.parseVisToJson()) {
+  const childrenPositionId = (node, _index, _positionId) => {
+    let positionId = _positionId + `_${_index}`
+    node.positionId = positionId
+    this.network.body.data.nodes.getDataSet().update({id: node.id, positionId})
+    node.children.forEach((child, index) => childrenPositionId(child, index, positionId))
+  }
+  jsonNetwork.forEach((node, index) => {
+    if (index === 1) console.log(node)
+    let positionId = `${index}`
+    this.network.body.data.nodes.getDataSet().update({id: node.id, positionId})
+    node.positionId = positionId
+    node.children.forEach((child, index) => childrenPositionId(child, index, positionId))
+  })
 }
 
 function getNodeChildrenAndParentById (_network, id, result) {

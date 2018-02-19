@@ -16,9 +16,11 @@
 <button id="cancel_btn">Cancel Edit</button>
 <button id="clear_btn">Delete Network</button>
 <div id="example" style="border: solid; border-width: 2px;"></div>
+<textarea rows='60' cols='40' id="batch_example" style="margin: 20px; border: solid; border-width: 2px;"></textarea>
 <script>
   conceptC = new ConceptCreator({
     network_container_id: 'example',
+    batch_container_id: 'batch_example',
     on_node_create: function (nodeData, callback) {
       if (this.node_defaults) {
         Object.assign(nodeData, this.node_defaults)
