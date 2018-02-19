@@ -12,7 +12,22 @@ const {
   nodeColor
 } = require('./vis/manipulation')
 
-
+function applyPositionIds (jsonNetwork = this.network_util.parseVisToJson()) {
+  const childrenPositionId = (node, _index, _positionId) => {
+    let positionId = _positionId + `_${_index}`
+    node.positionId = positionId
+    this.network.body.data.nodes.getDataSet().update({id: node.id, positionId})
+    node.children.forEach((child, index) => childrenPositionId(child, index, positionId))
+  }
+  jsonNetwork.forEach((node, index) => {
+    if (index === 1) console.log(node)
+    let positionId = `${index}`
+    this.network.body.data.nodes.getDataSet().update({id: node.id, positionId})
+    node.positionId = positionId
+    node.children.forEach((child, index) => childrenPositionId(child, index, positionId))
+  })
+  console.log(this.network.body.data.nodes.getDataSet())
+}
 
 function set_node_defaults (defaults) {
   this.node_defaults = defaults
@@ -32,7 +47,7 @@ class ConceptCreator {
       getNodeChildrenAndParentById: getNodeChildrenAndParentById.bind(this.network_util),
       connectionValidator: connectionValidator.bind(this.network_util),
       applyInheritance: applyInheritance.bind(this),
-      // applyPositionIds: applyPositionIds.bind(this),
+      applyPositionIds: applyPositionIds.bind(this),
       parseOnUpdate: debounce(() => {
 
         console.log('updateData', this)
@@ -72,7 +87,6 @@ class ConceptCreator {
       }
 
       function addEdge (edgeData, callback) {
-        // TODO: positionId
         this.network_util.on_edge_create(
           edgeData,
           (_edgeData) => {
@@ -80,9 +94,8 @@ class ConceptCreator {
               if (!validatedEdgeData) return callback(null)
               let jsonNetwork = this.network_util.parseVisToJson()
               let [from, to] = this.network_util.getNodesById(jsonNetwork, [edgeData.from, edgeData.to])
-              // this.network_util.applyPositionIdOnNewEdge(to, from, jsonNetwork)
               this.network_util.applyInheritance(to, from, jsonNetwork)
-
+              setTimeout(this.network_util.applyPositionIds, 249)
               callback(validatedEdgeData)
             })
           }

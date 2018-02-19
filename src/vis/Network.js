@@ -8,7 +8,8 @@ class Network extends vis.Network {
   }
 }
 function getAllNodesAndEdges () {
-  let {nodes, edges} = this.body.data
+  let nodes = this.body.data.nodes.getDataSet()
+  let edges = this.body.data.edges.getDataSet()
   return {nodes, edges}
 }
 function clear () {
