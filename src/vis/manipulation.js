@@ -1,3 +1,5 @@
+const debounce = require('../util/debounce')
+
 module.exports = {
   connectionIsValid,
   getNodesById,
@@ -5,8 +7,30 @@ module.exports = {
   applyInheritance,
   connectionValidator,
   nodeColor,
-  applyPositionIds
+  applyPositionIds,
+  parseOnUpdate
 
+}
+
+function parseOnUpdate () {
+  if (!this.options.batch_container_id) {return}
+  let nodes = this.network.body.data.nodes
+    .getDataSet()
+    .map(node => node)
+    .sort((a, b) => {
+      let posA = a.positionId.toString().split('_').map(i => parseInt(i) + 1)
+      let posB = b.positionId.toString().split('_').map(i => parseInt(i) + 1)
+      let diffArr = (new Array(Math.abs(posA.length - posB.length))).fill(0)
+      if (posA.length < posB.length) {posA = posA.concat(diffArr)}
+      else {posB = posB.concat(diffArr)}
+      return parseInt(posA.join('')) - parseInt(posB.join(''))
+    })
+  let text = nodes.reduce((output, node) => {
+    let prefix = (new Array(node.positionId.toString().split('_').length - 1)).fill('-').join('')
+    output += `${prefix}${node.label}:${node.type}:${node.relationship}\n`
+    return output
+  }, '')
+  document.getElementById(this.options.batch_container_id).value = text
 }
 
 function nodeColor (relationship) {

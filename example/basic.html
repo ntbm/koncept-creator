@@ -6,6 +6,8 @@
     <script src="../lib/app.js"></script>
     <script src="concept.js"></script>
     <link href="../node_modules/vis/dist/vis-network.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <button id="export_btn">export</button>
@@ -15,8 +17,13 @@
 <button id="edge_btn">add edge</button>
 <button id="cancel_btn">Cancel Edit</button>
 <button id="clear_btn">Delete Network</button>
-<div id="example" style="border: solid; border-width: 2px;"></div>
-<textarea rows='60' cols='40' id="batch_example" style="margin: 20px; border: solid; border-width: 2px;"></textarea>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8" id="example" style="border: solid; border-width: 2px;"></div>
+        <textarea class="col-4" rows='40' id="batch_example"
+                  style=""></textarea>
+    </div>
+</div>
 <script>
   conceptC = new ConceptCreator({
     network_container_id: 'example',
@@ -29,23 +36,24 @@
       callback(nodeData)
     },
     visOptions: {
-      height: '500px'
+      height: '500px',
+      width: '100%'
     },
     relationshipColors: {
-    '-1': '#B22222',
-    '0': '#0000FF',
-    '1': '#008000'
-  }
+      '-1': '#B22222',
+      '0': '#0000FF',
+      '1': '#008000'
+    }
   }, window.concept)
   document.getElementById('export_btn').addEventListener('click', function () {
     console.log(conceptC.exportJSON())
   })
   document.getElementById('concept_btn').addEventListener('click', function () {
-   conceptC.network_util.node_defaults = {type: 'concept'}
+    conceptC.network_util.node_defaults = {type: 'concept'}
     conceptC.network.addNodeMode()
   })
   document.getElementById('support_concept_btn').addEventListener('click', function () {
-   conceptC.network_util.node_defaults = {type: 'concept', relationship: 1}
+    conceptC.network_util.node_defaults = {type: 'concept', relationship: 1}
     conceptC.network.addNodeMode()
   })
   document.getElementById('term_btn').addEventListener('click', function () {

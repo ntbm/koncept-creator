@@ -10,7 +10,8 @@ const {
   applyInheritance,
   connectionValidator,
   nodeColor,
-  applyPositionIds
+  applyPositionIds,
+  parseOnUpdate
 } = require('./vis/manipulation')
 
 
@@ -33,29 +34,7 @@ class ConceptCreator {
       connectionValidator: connectionValidator.bind(this.network_util),
       applyInheritance: applyInheritance.bind(this),
       applyPositionIds: applyPositionIds.bind(this),
-      parseOnUpdate: debounce(() => {
-        if (!this.options.batch_container_id) {return}
-        let jsonNetwork = this.network_util.parseVisToJson()
-        // console.log()
-        // console.log(JSON.stringify(jsonNetwork, null, 2))
-        let nodes = this.network.body.data.nodes
-          .getDataSet()
-          .map(node => node)
-          .sort((a, b) => {
-            let posA = a.positionId.toString().split('_').map(i => parseInt(i) + 1)
-            let posB = b.positionId.toString().split('_').map(i => parseInt(i) + 1)
-            let diffArr = (new Array(Math.abs(posA.length - posB.length))).fill(0)
-            if (posA.length < posB.length) {posA = posA.concat(diffArr)}
-            else {posB = posB.concat(diffArr)}
-            return parseInt(posA.join('')) - parseInt(posB.join(''))
-          })
-        let text = nodes.reduce((output, node) => {
-          let prefix = (new Array(node.positionId.toString().split('_').length - 1)).fill('-').join('')
-          output+= `${prefix}${node.label}:${node.type}:${node.relationship}\n`
-          return output
-        }, '')
-        document.getElementById(this.options.batch_container_id).value = text
-      }, 250).bind(this),
+      parseOnUpdate: debounce(parseOnUpdate, 250).bind(this),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
       set_node_defaults: set_node_defaults.bind(this.network_util),
