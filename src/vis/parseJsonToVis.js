@@ -6,6 +6,7 @@ module.exports = {
 
 function parseJsonToVis (data) {
   this.parseJsonNode  = parseJsonNode.bind(this)
+  if (Object.keys(data).length === 0) return {nodes: null, edges: null}
   let {nodesArray, edgesArray} = this.parseJsonNode(null, data, [], [])
 
   return {

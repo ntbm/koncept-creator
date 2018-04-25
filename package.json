@@ -14,7 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "BABEL_ENV=production; browserify src/ConceptCreator.js -o lib/prod.js -t [babelify --presets [env] --env [production]]",
     "build-dev": "browserify src/ConceptCreator.js -o lib/app.js -t [babelify --presets [env]]",
-    "build-watch": "npm-watch build-dev"
+    "build-watch": "npm-watch build-dev",
+    "serve": "live-server --port=8181  --entry-file=example/basic.html --ignore=src"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "author": "Sascha Hahne <hahne.sascha@web.de>",
   "license": "NO LICENSE",
   "dependencies": {
+    "live-server": "^1.2.0",
     "vis": "^4.21.0"
   },
   "devDependencies": {
