@@ -1,5 +1,5 @@
 const Network = require('./vis/Network')
-const {parseJsonToVis} = require('./vis/parseJsonToVis')
+const {parseJsonToVis, parseArrayToVis} = require('./vis/parseJsonToVis')
 const {parseVisToJson} = require('./vis/parseVisToJson')
 const Options = require('./util/Options')
 const debounce = require('./util/debounce')
@@ -38,6 +38,7 @@ class ConceptCreator {
       parseOnUpdate: debounce(parseOnUpdate.bind(this), 250),
       handleTextUpdate: debounce(handleTextUpdate.bind(this), 200),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
+      parseArrayToVis: parseArrayToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
       set_node_defaults: set_node_defaults.bind(this.network_util),
       parseVisToJson: parseVisToJson.bind(this),

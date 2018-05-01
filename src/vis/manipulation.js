@@ -39,11 +39,11 @@ function handleTextUpdate () {
       }
 
       // Check if valid child or brother
-      const positionDepth = (line.match(/-/g) || []).length
+      const positionDepth = (line.match(/^-*/g)[0].split('')).length
       if ((lastPositionId.length === 0 && positionDepth !== 0)
-        || (positionDepth - lastPositionId.length > 1))
+        || (positionDepth - lastPositionId.length > 1)) {
         return {lines, lastPositionId, valid: false}
-
+      }
       // Count up Position Id
       let newPositionId = lastPositionId.slice(0, positionDepth + 1)
       newPositionId[positionDepth] =
@@ -108,10 +108,49 @@ function handleTextUpdate () {
   endMatch = newTextLines.length - 1 - endMatch // index transformation because endcount
   endMatch = endMatch - beginMatch === 1 ? endMatch + 1 : endMatch
 
+  // console.log(headMatchCount, tailMatchCount, oldTextLines.length)
+  //
+  // console.log(beginMatch, endMatch)
+  // get implied end match because of position ids, remember implied changes
+  // update implied position ids
 
-  console.log(headMatchCount, tailMatchCount, oldTextLines.length)
+  function textDataToJson (textData) {
+    const _parseInt = (i) => parseInt(i)
+    const result = []
+    textData.reduce((currentResult, dataLine) => {
+      const {label: name, type, relationship, meta} = dataLine
+      const lineWithChildren = Object.assign({}, {children: [], name, type,relationship: parseFloat(relationship), meta})
+      let val = dataLine.positionId
+        .split('_')
+        .map(_parseInt)
+        .reduce((accumulator, current) => {
+          if (!accumulator[current]) accumulator[current] = lineWithChildren
+          if (!!accumulator[current].children) {
+            return accumulator[current].children
+          } else {
+            return accumulator[current]
+          }
+        }, currentResult)
+      val = lineWithChildren
+      return currentResult
+    }, result)
+    return result
+  }
 
-  console.log(beginMatch, endMatch)
+  this.network.setData(
+    this.network_util.parseArrayToVis(
+      textDataToJson(
+        newTextNodeData
+          .lines.filter(line => line !== null)
+          .sort((a, b) => a.positionId.length - b.positionId.length)
+      )
+    )
+  )
+  // const visData = this.network_util.parseJsonToVis(jsonNetwork)
+  // console.log(visData)
+  // this.network.data = visData
+  // console.log(jsonNetwork)
+  // this.network.setData(visData)
 }
 
 function handleTextUpdateOld () {
