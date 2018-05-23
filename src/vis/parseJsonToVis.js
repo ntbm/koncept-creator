@@ -6,6 +6,7 @@ module.exports = {
 }
 
 function parseJsonToVis (data) {
+  if (Array.isArray(data)) return parseArrayToVis.bind(this)(data)
   this.parseJsonNode = parseJsonNode.bind(this)
   if (Object.keys(data).length === 0) return {nodes: null, edges: null}
   let {nodesArray, edgesArray} = this.parseJsonNode(null, data, [], [])
@@ -18,7 +19,12 @@ function parseJsonToVis (data) {
 
 function parseArrayToVis (data) {
   this.parseJsonNode = parseJsonNode.bind(this)
-  let {nodesArray, edgesArray} = data.reduce((accumlator, current) =>
+  let {nodesArray, edgesArray} = data
+    .map((node, index) => {
+      node.positionId = index.toString()
+      return node
+    })
+    .reduce((accumlator, current) =>
       this.parseJsonNode(null, current, accumlator.nodesArray, accumlator.edgesArray)
     , {nodesArray: [], edgesArray: []})
 

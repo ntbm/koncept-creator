@@ -46,9 +46,21 @@ function handleTextUpdate () {
         return {lines, lastPositionId, valid: false}
       }
       // Count up Position Id
+      const getZeroPositionId = (lines) => {
+        if (lines.length === 0) return 0
+        index = lines.length - 1
+        while (index !== 0 && lines[index] === null) index--
+        if (index === 0) return 0
+        return parseInt(lines[index].positionId.split('_')[0]) + 1
+      }
       let newPositionId = lastPositionId.slice(0, positionDepth + 1)
-      newPositionId[positionDepth] =
-        newPositionId[positionDepth] === undefined ? 0 : newPositionId[positionDepth] + 1
+      if (positionDepth === 0) {
+        newPositionId = [getZeroPositionId(lines)]
+      }
+      else {
+        newPositionId[positionDepth] =
+          newPositionId[positionDepth] === undefined ? 0 : newPositionId[positionDepth] + 1
+      }
 
       // Parse Data from line
       const [label, type, relationship] = line.slice(positionDepth).split(':')
@@ -73,6 +85,7 @@ function handleTextUpdate () {
   const oldTextLines = this.batchText.split('\n')
   const oldTextNodeData = mapLinesToNodeDataAndCheckValidity(oldTextLines)
   const newTextNodeData = mapLinesToNodeDataAndCheckValidity(newTextLines)
+  console.log(newTextNodeData)
 
   // Find Begin and end of the changes between old and new Text
   const [beginMatch, headMatchCount] = newTextLines
