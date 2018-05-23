@@ -26,6 +26,7 @@ function handleTextUpdate () {
     const validLine = /^-*[\w\s]+:(concept|term):-?(0[.]?\d*|1)$/
     line = line.trim()
     if (line === '') return valid
+    if (line.endsWith('.')) return false
     return valid && !!validLine.exec(line)
   }
   // Parses every line to node data and checks if Child Parent Relationship is valid
