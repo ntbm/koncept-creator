@@ -119,8 +119,14 @@ function handleTextUpdate () {
     const result = []
     textData.reduce((currentResult, dataLine) => {
       const {label: name, type, relationship, meta} = dataLine
-      const lineWithChildren = Object.assign({}, {children: [], name, type,relationship: parseFloat(relationship), meta})
-      let val = dataLine.positionId
+      const lineWithChildren = Object.assign({}, {
+        children: [],
+        name,
+        type,
+        relationship: parseFloat(relationship),
+        meta
+      })
+      dataLine.positionId
         .split('_')
         .map(_parseInt)
         .reduce((accumulator, current) => {
@@ -131,7 +137,6 @@ function handleTextUpdate () {
             return accumulator[current]
           }
         }, currentResult)
-      val = lineWithChildren
       return currentResult
     }, result)
     return result
@@ -283,7 +288,31 @@ function handleTextUpdateOld () {
 
 function parseOnUpdate () {
   if (!this.options.batch_container_id) {return}
+  const currentText =  document.getElementById(this.options.batch_container_id).value
+  const emptyLines = currentText
+      .split(/\r?\n/)
+      .map((line, index) => {
+        return [line, index]
+      })
+      .filter(([line]) => line.trim() === '')
+  if (
+    emptyLines.length > 0 &&
+    emptyLines[0][1] === 0
+  ) {
+    emptyLines.splice(0, 1)
+  }
+  if (emptyLines.length > 0 &&
+    emptyLines[emptyLines.length - 1][1] === currentText.split(/\r?\n/).length - 1
+  ){
+    emptyLines.splice(emptyLines.length - 1, 1)
+  }
   let text = parseNetworkToText(this)
+    .split(/\r?\n/)
+  emptyLines
+    .forEach(([line, index]) => {
+      text.splice(index, 0, line)
+    })
+  text = text.join('\n')
   this.batchText = text
   document.getElementById(this.options.batch_container_id).value = text
 }

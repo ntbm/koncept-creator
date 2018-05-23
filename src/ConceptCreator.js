@@ -36,7 +36,7 @@ class ConceptCreator {
       applyInheritance: applyInheritance.bind(this),
       applyPositionIds: applyPositionIds.bind(this),
       parseOnUpdate: debounce(parseOnUpdate.bind(this), 250),
-      handleTextUpdate: debounce(handleTextUpdate.bind(this), 200),
+      handleTextUpdate: debounce(handleTextUpdate.bind(this), 500),
       parseJsonToVis: parseJsonToVis.bind(this.network_util),
       parseArrayToVis: parseArrayToVis.bind(this.network_util),
       nodeColor: nodeColor.bind(this.network_util),
