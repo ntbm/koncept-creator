@@ -15,7 +15,8 @@
     "build": "BABEL_ENV=production; browserify src/ConceptCreator.js -o lib/prod.js -t [babelify --presets [env] --env [production]]",
     "build-dev": "browserify src/ConceptCreator.js -o lib/app.js -t [babelify --presets [env]]",
     "build-watch": "npm-watch build-dev",
-    "serve": "live-server --port=8181  --entry-file=example/basic.html --ignore=src"
+    "serve": "live-server --port=8181  --entry-file=example/basic.html --ignore=src",
+    "example-api": "nodemon example/api"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,6 @@
   "author": "Sascha Hahne <hahne.sascha@web.de>",
   "license": "NO LICENSE",
   "dependencies": {
-    "live-server": "^1.2.0",
     "vis": "^4.21.0"
   },
   "devDependencies": {
@@ -34,6 +34,8 @@
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
+    "live-server": "^1.2.0",
+    "express": "^4.16.3",
     "npm-watch": "^0.3.0"
   }
 }
