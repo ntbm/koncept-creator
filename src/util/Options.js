@@ -3,6 +3,7 @@ module.exports = class Options {
                  network_container_id,
                  batch_container_id,
                  editable = true,
+                 flexApi = null,
                  on_node_create = _on_node_create,
                  on_node_edit = _on_node_edit,
                  on_edge_create = _on_edge_create,
@@ -43,6 +44,7 @@ module.exports = class Options {
       }
     }, visOptions)
     this.editable = editable
+    this.flexApi = flexApi
   }
 }
 
@@ -52,6 +54,7 @@ function _on_node_create (nodeData, callback) {
   nodeData.relationship = 0
   callback(nodeData)
 }
+
 function _on_node_edit (nodeData, callback) {
   callback(nodeData)
 }

@@ -44,7 +44,8 @@
         '-1': '#B22222',
         '0': '#0000FF',
         '1': '#008000'
-      }
+      },
+      flexApi: function (word) {return fetch(`http://localhost:8000?word=${word}`).then(res => res.json())}
     }, window.concept)
     document.getElementById('export_btn').addEventListener('click', function () {
       console.log(conceptC.exportJSON())

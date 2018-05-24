@@ -29,6 +29,8 @@ class ConceptCreator {
       on_node_create: this.options.on_node_create.bind(this.network_util),
       on_node_edit: this.options.on_node_edit.bind(this.network_util),
       on_edge_create: this.options.on_edge_create.bind(this.network_util),
+      flexApi: this.options.flexApi.bind(this.network_util),
+      flexApiCache: {},
       connectionIsValid: connectionIsValid.bind(this.network_util),
       getNodesById: getNodesById.bind(this.network_util),
       getNodeChildrenAndParentById: getNodeChildrenAndParentById.bind(this.network_util),
@@ -107,8 +109,29 @@ class ConceptCreator {
       }
     }
     this.network = new Network(container, data, this.options.visOptions)
-    setTimeout(this.network_util.parseOnUpdate, 200)
-    this.network.on('_dataUpdated', this.network_util.parseOnUpdate)
+    setTimeout(this.network_util.parseOnUpdate, 200) // TODO add flex Api
+    this.network.on('_dataUpdated', () => {
+      if (this.network_util.flexApi && typeof this.network_util.flexApi === 'function') {
+        const promiseArray = this.network.body.data.nodes
+          .getDataSet()
+          .map(async ({label}) => {
+            if (this.network_util.flexApiCache[label]){
+              return Promise.resolve(label)
+            } else {
+              return this.network_util.flexApi(label)
+                .then(res => {
+                  this.network_util.flexApiCache[label] = res
+                  return res
+                })
+            }
+          })
+        Promise.all(promiseArray)
+          .then(() => {
+            // TODO
+          })
+      }
+      this.network_util.parseOnUpdate()
+    })
   }
 
   exportJSON () {
