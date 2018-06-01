@@ -5,6 +5,7 @@ class Network extends vis.Network {
     super(container, data, visOptions)
     this.getAllNodesAndEdges = getAllNodesAndEdges.bind(this)
     this.clear = clear.bind(this)
+    this.getNodeById = getNodeById.bind(this)
   }
 }
 function getAllNodesAndEdges () {
@@ -18,4 +19,12 @@ function clear () {
     edges: new vis.DataSet([])
   })
 }
+function getNodeById (_id) {
+  if (!_id) return null
+  return this.body.data.nodes
+    .getDataSet()
+    .map(node => node)
+    .find(({id}) => id === _id)
+}
+
 module.exports = Network

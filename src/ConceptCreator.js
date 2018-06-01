@@ -109,29 +109,69 @@ class ConceptCreator {
       }
     }
     this.network = new Network(container, data, this.options.visOptions)
-    setTimeout(this.network_util.parseOnUpdate, 200) // TODO add flex Api
-    this.network.on('_dataUpdated', () => {
-      if (this.network_util.flexApi && typeof this.network_util.flexApi === 'function') {
-        const promiseArray = this.network.body.data.nodes
-          .getDataSet()
-          .map(async ({label}) => {
-            if (this.network_util.flexApiCache[label]){
-              return Promise.resolve(label)
-            } else {
-              return this.network_util.flexApi(label)
-                .then(res => {
-                  this.network_util.flexApiCache[label] = res
-                  return res
-                })
-            }
+    const onUpdate = (function () {
+      Promise.resolve()
+        .then(() => {
+          if (this.network_util.flexApi && typeof this.network_util.flexApi === 'function') {
+            return Promise.all(this.network.body.data.nodes
+              .getDataSet()
+              .map(({label}) => {
+                if (this.network_util.flexApiCache[label]) { return Promise.resolve(null) }
+                else {
+                  return this.network_util.flexApi(label).then(res => {
+                    this.network_util.flexApiCache[label] = res
+                    return res
+                  })
+                }
+              }))
+          } else {
+            return Promise.resolve([])
+          }
+        })
+        .then(data => {
+          if (data.filter(item => item !== null).length !== 0) this.network.emit('renderFlex')
+        })
+        .then(this.network_util.parseOnUpdate)
+    }).bind(this)
+
+    const onSelect = (function () {
+      if (this.options.flex_container_id) {
+        const nodeToShowFlex = this.network.getNodeById(this.network.getSelectedNodes()[0])
+        const flexContainer = document.getElementById(this.options.flex_container_id)
+        while (flexContainer.firstChild) {
+          flexContainer.removeChild(flexContainer.firstChild)
+        }
+        if (!nodeToShowFlex) return
+        nodeToShowFlex.flex = this.network_util.flexApiCache[nodeToShowFlex.label]
+        const flexSelectOption = (id, label, selected = false, count = null) => {
+          const checkboxElement = document.createElement('input')
+          checkboxElement.setAttribute('type', 'checkbox')
+          checkboxElement.setAttribute('value', label)
+          if (selected) checkboxElement.setAttribute('selected', '')
+          checkboxElement.addEventListener('change', (event) => this.network.emit('renderFlex', {id, event}))
+
+          const labelElement = document.createElement('label')
+          labelElement.setAttribute('for', label)
+          labelElement.innerText = `${label} ${count !== null ? count : ''}`
+          return [checkboxElement, labelElement]
+        }
+        nodeToShowFlex.flex
+          .map(({name, count = null}) => flexSelectOption(nodeToShowFlex.id, name, false, count))
+          .forEach(([checkbox, label]) => {
+            flexContainer.appendChild(checkbox)
+            flexContainer.appendChild(label)
+            flexContainer.appendChild(document.createElement('br'))
           })
-        Promise.all(promiseArray)
-          .then(() => {
-            // TODO
-          })
+
       }
-      this.network_util.parseOnUpdate()
+    }).bind(this)
+    setTimeout(onUpdate, 200)
+    this.network.on('_dataUpdated', onUpdate)
+    this.network.on('select', onSelect)
+    this.network.on('renderFlex', (args) => {
+      console.log('renderFlex', args)
     })
+
   }
 
   exportJSON () {

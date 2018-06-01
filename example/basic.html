@@ -20,8 +20,18 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-8" id="example" style="border: solid; border-width: 2px;"></div>
-        <textarea class="col-4" rows='40' id="batch_example"
-                  style=""></textarea>
+        <div class="col-4">
+            <div class="row">
+                <textarea  class="col-12" rows='20' id="batch_example"
+                           style=""></textarea>
+            </div>
+            <div class="row">
+                <div  class="col-12" rows='20' id="flex_example"
+                      style="min-height: 300px">
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 <script>
@@ -37,7 +47,7 @@
         callback(nodeData)
       },
       visOptions: {
-        height: '500px',
+        height: '768px',
         width: '100%'
       },
       relationshipColors: {
@@ -45,7 +55,8 @@
         '0': '#0000FF',
         '1': '#008000'
       },
-      flexApi: function (word) {return fetch(`http://localhost:8000?word=${word}`).then(res => res.json())}
+      flexApi: function (word) {return fetch(`http://localhost:8000?word=${word}`).then(res => res.json())},
+      flex_container_id: 'flex_example'
     }, window.concept)
     document.getElementById('export_btn').addEventListener('click', function () {
       console.log(conceptC.exportJSON())
