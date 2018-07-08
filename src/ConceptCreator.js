@@ -188,22 +188,22 @@ class ConceptCreator {
        * @param count occurrences in backend or something else
        * @returns {[checkboxElement, labelElement]} elements to render flexOption
        */
-      // TODO refactor to other file?
+        // TODO refactor to other file?
       const flexSelectOption = (id, label, selected = false, count = null) => {
-        // create checkbox element
-        const checkboxElement = document.createElement('input')
-        checkboxElement.setAttribute('type', 'checkbox')
-        checkboxElement.setAttribute('value', label)
-        if (selected) checkboxElement.setAttribute('selected', '')
-        // bind emitter to handle options change
-        checkboxElement.addEventListener('change', (event) => this.network.emit('renderFlex', {id, event}))
+          // create checkbox element
+          const checkboxElement = document.createElement('input')
+          checkboxElement.setAttribute('type', 'checkbox')
+          checkboxElement.setAttribute('value', label)
+          if (selected) checkboxElement.setAttribute('selected', '')
+          // bind emitter to handle options change
+          checkboxElement.addEventListener('change', (event) => this.network.emit('renderFlex', {id, event}))
 
-        // create label element
-        const labelElement = document.createElement('label')
-        labelElement.setAttribute('for', label)
-        labelElement.innerText = `${label} ${count !== null ? count : ''}`
-        return [checkboxElement, labelElement]
-      }
+          // create label element
+          const labelElement = document.createElement('label')
+          labelElement.setAttribute('for', label)
+          labelElement.innerText = `${label} ${count !== null ? count : ''}`
+          return [checkboxElement, labelElement]
+        }
 
       // render flexOptions
       flexOptions
@@ -225,25 +225,27 @@ class ConceptCreator {
       .then(() => {
         if (this.network_util.flexApi && typeof this.network_util.flexApi === 'function') {
           // check flex cache and load data if not present
-          return Promise.all(this.network.body.data.nodes
-            .getDataSet()
-            .map(({label, type}) => {
-              // flex Data already in cache
-              if (this.network_util.flexApiCache[label]) {
-                return Promise.resolve(null)
-              }
-              // node type not selected for flexApi
-              else if (this.options.flex_target && this.options.flex_target !== type) {
-                return Promise.resolve(null)
-              }
-              // get flex data and save to cache
-              else {
-                return this.network_util.flexApi(label).then(res => {
-                  this.network_util.flexApiCache[label] = res
-                  return res
-                })
-              }
-            }))
+          return Promise.all(
+            this.network.body.data.nodes
+              .getDataSet()
+              .map(({label, type}) => {
+                // flex Data already in cache
+                if (this.network_util.flexApiCache[label]) {
+                  return Promise.resolve(null)
+                }
+                // node type not selected for flexApi
+                else if (this.options.flex_target && this.options.flex_target !== type) {
+                  return Promise.resolve(null)
+                }
+                // get flex data and save to cache
+                else {
+                  return this.network_util.flexApi(label).then(res => {
+                    this.network_util.flexApiCache[label] = res
+                    return res
+                  })
+                }
+              })
+          )
         } else {
           return Promise.resolve([])
         }
