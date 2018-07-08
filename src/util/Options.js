@@ -5,7 +5,7 @@ module.exports = class Options {
                  editable = true,
                  flexApi = null,
                  flex_container_id = null,
-                 // TODO define on which nodes the api should be called
+                 flex_target = null, // term | concept
                  on_node_create = _on_node_create,
                  on_node_edit = _on_node_edit,
                  on_edge_create = _on_edge_create,
@@ -48,6 +48,7 @@ module.exports = class Options {
     this.editable = editable
     this.flexApi = flexApi
     this.flex_container_id = flex_container_id
+    this.flex_target = flex_target
   }
 }
 

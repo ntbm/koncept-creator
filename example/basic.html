@@ -56,7 +56,8 @@
         '1': '#008000'
       },
       flexApi: function (word) {return fetch(`http://localhost:8000?word=${word}`).then(res => res.json())},
-      flex_container_id: 'flex_example'
+      flex_container_id: 'flex_example',
+      flex_target: 'term'
     }, window.concept)
     document.getElementById('export_btn').addEventListener('click', function () {
       console.log(conceptC.exportJSON())
