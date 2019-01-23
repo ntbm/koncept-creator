@@ -206,13 +206,15 @@ class ConceptCreator {
         }
 
       // render flexOptions
-      flexOptions
-        .map(({name, count = null}) => flexSelectOption(nodeToShowFlex.id, name, false, count))
-        .forEach(([checkbox, label]) => {
-          flexContainer.appendChild(checkbox)
-          flexContainer.appendChild(label)
-          flexContainer.appendChild(document.createElement('br'))
-        })
+      if (flexOptions) {
+        flexOptions
+          .map(({name, count = null}) => flexSelectOption(nodeToShowFlex.id, name, false, count))
+          .forEach(([checkbox, label]) => {
+            flexContainer.appendChild(checkbox)
+            flexContainer.appendChild(label)
+            flexContainer.appendChild(document.createElement('br'))
+          })
+      }
 
     }
   }
