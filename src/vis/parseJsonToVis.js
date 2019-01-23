@@ -35,6 +35,7 @@ function parseArrayToVis (data) {
 }
 
 function parseJsonNode (parent, current_node, nodesArray, edgesArray) {
+  if (parent && parent.type === 'term') throw new Error('TERMS_CAN_NOT_HAVE_CHILDREN');
   let {name, type = 'concept', relationship = 0, meta, children, positionId = '0'} = current_node
   let current = {
     label: name,
