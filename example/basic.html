@@ -16,6 +16,7 @@
 <button id="term_btn">add term</button>
 <button id="edge_btn">add edge</button>
 <button id="cancel_btn">Cancel Edit</button>
+<button id="delete_btn">Delete Selected</button>
 <button id="clear_btn">Delete Network</button>
 <div class="container-fluid">
     <div class="row">
@@ -82,6 +83,9 @@
     })
     document.getElementById('clear_btn').addEventListener('click', function () {
       conceptC.network.clear()
+    })
+    document.getElementById('delete_btn').addEventListener('click', function () {
+      conceptC.network.deleteSelected()
     })
   })()
 </script>
