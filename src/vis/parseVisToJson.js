@@ -4,7 +4,7 @@ const clean = require('../util/ConceptNode').clean
 module.exports = {
   parseVisToJson
 }
-// TODO clean JSON from vis data or add it for all
+
 function parseVisToJson(network=this.network, cleanNodes=true) {
   if (!network instanceof Network){
     throw "input should be of type Network"
