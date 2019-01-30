@@ -1,10 +1,11 @@
 const Network = require("./Network")
+const clean = require('../util/ConceptNode').clean
 
 module.exports = {
   parseVisToJson
 }
 // TODO clean JSON from vis data or add it for all
-function parseVisToJson(network=this.network, clean=true) {
+function parseVisToJson(network=this.network, cleanNodes=true) {
   if (!network instanceof Network){
     throw "input should be of type Network"
   }
@@ -28,6 +29,11 @@ function parseVisToJson(network=this.network, clean=true) {
   for(let rootNode of rootNodes){
     parseVisNode(rootNode, nodes, edges)
   }
+  if (cleanNodes) {
+    for (let _i in rootNodes) {
+      rootNodes[_i] = clean(rootNodes[_i])
+    }
+  }
   return rootNodes
 }
 function parseVisNode (rootNode, nodes, edges){
@@ -43,9 +49,10 @@ function parseVisNode (rootNode, nodes, edges){
       childNodes.push(childNode)
     }
   })
-  rootNode.children = childNodes
-  for(let node of rootNode.children){
-    parseVisNode(node, nodes, edges)
+  if (childNodes.length > 0) {
+    rootNode.children = childNodes
+    for(let node of rootNode.children){
+      parseVisNode(node, nodes, edges)
+    }
   }
-
 }

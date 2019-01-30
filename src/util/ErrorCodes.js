@@ -1,0 +1,3 @@
+module.exports = {
+  TERMS_CAN_NOT_HAVE_CHILDREN: 'TERMS_CAN_NOT_HAVE_CHILDREN'
+}
